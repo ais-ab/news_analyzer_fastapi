@@ -17,8 +17,9 @@ from functools import lru_cache
 
 # Load .env
 load_dotenv()
-openai_key = os.getenv("OPENAI_KEY")
-os.environ["OPENAI_API_KEY"] = openai_key
+openai_key = os.getenv("OPENAI_KEY") or os.getenv("OPENAI_API_KEY")
+if openai_key and openai_key != "dummy-key-for-development":
+    os.environ["OPENAI_API_KEY"] = openai_key
 
 # Define State
 class MyState(TypedDict):
