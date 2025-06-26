@@ -25,9 +25,8 @@ def get_current_client(credentials: HTTPAuthorizationCredentials = Depends(secur
 @router.post("/login", response_model=Token)
 async def login(db: Session = Depends(get_db)):
     """Login endpoint - creates or retrieves client"""
-    # For simplicity, we'll use a default client ID
-    # In production, you'd implement proper authentication
-    client_id = os.getenv("CLIENT_ID", "default_client")
+    # Use demo_user as the default client ID for testing
+    client_id = os.getenv("CLIENT_ID", "demo_user")
     
     # Check if client exists, create if not
     client = db.query(Client).filter(Client.client_id == client_id).first()
