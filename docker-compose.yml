@@ -1,0 +1,123 @@
+version: '3.8'
+
+services:
+  # PostgreSQL Database
+  postgres:
+    image: postgres:15-alpine
+    container_name: news_analyzer_db
+    environment:
+      POSTGRES_DB: news_analyzer
+      POSTGRES_USER: news_user
+      POSTGRES_PASSWORD: news_password
+    volumes:
+      - postgres_data:/var/lib/postgresql/data
+      - ./backend/init.sql:/docker-entrypoint-initdb.d/init.sql
+    ports:
+      - "5432:5432"
+    healthcheck:
+      test: ["CMD-SHELL", "pg_isready -U news_user -d news_analyzer"]
+      interval: 10s
+      timeout: 5s
+      retries: 5
+    networks:
+      - news_analyzer_network
+
+  # FastAPI Backend
+  backend:
+    build:
+      context: .
+      dockerfile: Dockerfile.backend
+    container_name: news_analyzer_backend
+    environment:
+      - DATABASE_URL=postgresql://news_user:news_password@postgres:5432/news_analyzer
+      - SECRET_KEY=your-secret-key-change-in-production
+      - OPENAI_API_KEY=${OPENAI_API_KEY:-}
+      - OLLAMA_BASE_URL=${OLLAMA_BASE_URL:-http://ollama:11434}
+      - ENVIRONMENT=production
+    volumes:
+      - ./backend/db:/app/db
+      - ./backend/tmp:/app/tmp
+    ports:
+      - "8000:8000"
+    depends_on:
+      postgres:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "curl", "-f", "http://localhost:8000/api/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - news_analyzer_network
+    restart: unless-stopped
+
+  # React Frontend
+  frontend:
+    build:
+      context: .
+      dockerfile: Dockerfile.frontend
+    container_name: news_analyzer_frontend
+    ports:
+      - "80:80"
+    depends_on:
+      backend:
+        condition: service_healthy
+    healthcheck:
+      test: ["CMD", "wget", "--no-verbose", "--tries=1", "--spider", "http://localhost:80/health"]
+      interval: 30s
+      timeout: 10s
+      retries: 3
+      start_period: 40s
+    networks:
+      - news_analyzer_network
+    restart: unless-stopped
+
+  # Optional: Ollama for local LLM (uncomment if using Ollama)
+  # ollama:
+  #   image: ollama/ollama:latest
+  #   container_name: news_analyzer_ollama
+  #   environment:
+  #     - OLLAMA_HOST=0.0.0.0
+  #   volumes:
+  #     - ollama_data:/root/.ollama
+  #   ports:
+  #     - "11434:11434"
+  #   healthcheck:
+  #     test: ["CMD", "curl", "-f", "http://localhost:11434/api/tags"]
+  #     interval: 30s
+  #     timeout: 10s
+  #     retries: 3
+  #     start_period: 60s
+  #   networks:
+  #     - news_analyzer_network
+  #   restart: unless-stopped
+
+  # Optional: Redis for caching (uncomment if needed)
+  # redis:
+  #   image: redis:7-alpine
+  #   container_name: news_analyzer_redis
+  #   ports:
+  #     - "6379:6379"
+  #   volumes:
+  #     - redis_data:/data
+  #   healthcheck:
+  #     test: ["CMD", "redis-cli", "ping"]
+  #     interval: 10s
+  #     timeout: 5s
+  #     retries: 3
+  #   networks:
+  #     - news_analyzer_network
+  #   restart: unless-stopped
+
+volumes:
+  postgres_data:
+    driver: local
+  # ollama_data:
+  #   driver: local
+  # redis_data:
+  #   driver: local
+
+networks:
+  news_analyzer_network:
+    driver: bridge 

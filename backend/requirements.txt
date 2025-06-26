@@ -1,0 +1,56 @@
+# FastAPI and web framework
+fastapi==0.104.1
+uvicorn[standard]==0.24.0
+python-multipart==0.0.6
+
+# Database
+sqlalchemy==2.0.23
+psycopg2-binary==2.9.9
+alembic==1.13.1
+
+# Authentication
+python-jose[cryptography]==3.3.0
+passlib[bcrypt]==1.7.4
+python-dotenv==1.0.0
+
+# Core dependencies
+langchain-openai>=0.1.0
+langgraph>=0.2.0
+langchain>=0.2.0
+langchain-core>=0.2.0
+
+# Async and performance
+aiohttp>=3.9.0
+asyncio-throttle>=1.0.0
+aiofiles>=23.0.0
+
+# Scraping and web
+scrapy>=2.11.0
+newspaper3k>=0.2.8
+trafilatura>=8.0.0
+
+# Database and caching
+redis>=5.0.0
+
+# Monitoring and profiling
+psutil>=5.9.0
+
+# Utilities
+requests==2.31.0
+urllib3>=2.0.0
+pydantic==2.5.0
+pydantic-settings==2.1.0
+
+# CORS for frontend communication
+fastapi-cors>=0.0.6
+
+# Optional: For advanced caching
+diskcache>=5.6.0
+
+# Optional: For better async performance
+uvloop>=0.19.0; sys_platform != "win32"
+
+# Additional dependencies
+feedparser==6.0.10
+beautifulsoup4==4.12.2
+openai==1.3.7 
