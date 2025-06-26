@@ -41,12 +41,7 @@ app = FastAPI(
 # Configure CORS
 app.add_middleware(
     CORSMiddleware,
-    allow_origins=[
-        "http://localhost",
-        "http://localhost:80",
-        "http://localhost:3000",
-        "http://127.0.0.1:3000"
-    ],  # Allow Docker and dev server
+    allow_origins=["*"],  # Allow all origins for AWS deployment
     allow_credentials=True,
     allow_methods=["*"],
     allow_headers=["*"],

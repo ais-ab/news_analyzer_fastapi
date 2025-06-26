@@ -16,7 +16,7 @@ import {
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: process.env.REACT_APP_API_URL || '/api',  // Use environment variable or relative URL
+  baseURL: process.env.REACT_APP_API_URL || `${window.location.protocol}//${window.location.hostname}:8000/api`,
   headers: {
     'Content-Type': 'application/json',
   },
@@ -46,8 +46,16 @@ api.interceptors.response.use(
 // Authentication API
 export const authAPI = {
   login: async (): Promise<LoginResponse> => {
-    const response = await api.post<LoginResponse>('/auth/login');
-    return response.data;
+    console.log('Attempting login with baseURL:', api.defaults.baseURL);
+    try {
+      const response = await api.post<LoginResponse>('/auth/login');
+      console.log('Login successful:', response.data);
+      return response.data;
+    } catch (error: any) {
+      console.error('Login failed:', error);
+      console.error('Error details:', error.response?.data);
+      throw error;
+    }
   },
 
   getCurrentUser: async () => {
