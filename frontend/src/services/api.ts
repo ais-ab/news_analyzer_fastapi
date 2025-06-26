@@ -16,7 +16,7 @@ import {
 
 // Create axios instance with base configuration
 const api = axios.create({
-  baseURL: 'http://localhost:8000/api',  // Use full backend URL
+  baseURL: process.env.REACT_APP_API_URL || '/api',  // Use environment variable or relative URL
   headers: {
     'Content-Type': 'application/json',
   },

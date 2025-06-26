@@ -1,0 +1,5 @@
+
+
+###START AWS instance ######
+
+ssh -i news-analyzer-key.pem ec2-user@51.20.42.188
