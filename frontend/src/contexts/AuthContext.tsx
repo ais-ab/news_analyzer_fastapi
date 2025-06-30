@@ -54,20 +54,20 @@ export const AuthProvider: React.FC<AuthProviderProps> = ({ children }) => {
   }, []);
 
   const login = async () => {
-    try {
-      const response = await authAPI.login();
-      const { access_token } = response;
-      
-      localStorage.setItem('token', access_token);
-      setToken(access_token);
-      
-      const userData = await authAPI.getCurrentUser();
-      setUser(userData);
-      setIsAuthenticated(true);
-    } catch (error) {
-      console.error('Login failed:', error);
-      throw error;
-    }
+    // Bypass authentication - automatically authenticate user
+    const mockUser: User = {
+      client_id: "demo_user",
+      created_at: new Date().toISOString()
+    };
+    
+    const mockToken = "demo_token_123";
+    
+    localStorage.setItem('token', mockToken);
+    setToken(mockToken);
+    setUser(mockUser);
+    setIsAuthenticated(true);
+    
+    console.log('Auto-authenticated as demo user');
   };
 
   const logout = async () => {

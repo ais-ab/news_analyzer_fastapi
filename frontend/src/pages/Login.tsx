@@ -10,17 +10,9 @@ const Login: React.FC = () => {
   const navigate = useNavigate();
 
   const handleLogin = async () => {
-    setIsLoading(true);
-    try {
-      await login();
-      toast.success('Successfully logged in!');
-      navigate('/');
-    } catch (error) {
-      toast.error('Login failed. Please try again.');
-      console.error('Login error:', error);
-    } finally {
-      setIsLoading(false);
-    }
+    // Do nothing - just stay on the login page
+    console.log('Login button clicked but no action taken');
+    // No authentication, no navigation, no state changes
   };
 
   return (
@@ -42,26 +34,19 @@ const Login: React.FC = () => {
           <div className="space-y-6">
             <div>
               <h3 className="text-lg font-medium text-gray-900 mb-4">
-                Welcome Back
+                Login Disabled
               </h3>
               <p className="text-sm text-gray-600 mb-6">
-                Sign in to access your personalized news analysis dashboard.
+                Authentication functionality has been disabled. This is a demo page.
               </p>
             </div>
 
             <button
               onClick={handleLogin}
-              disabled={isLoading}
-              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-blue-600 hover:bg-blue-700 focus:outline-none focus:ring-2 focus:ring-offset-2 focus:ring-blue-500 disabled:opacity-50 disabled:cursor-not-allowed transition-colors"
+              disabled={true}
+              className="w-full flex justify-center py-3 px-4 border border-transparent rounded-md shadow-sm text-sm font-medium text-white bg-gray-400 cursor-not-allowed"
             >
-              {isLoading ? (
-                <>
-                  <Loader className="animate-spin -ml-1 mr-3 h-5 w-5" />
-                  Signing in...
-                </>
-              ) : (
-                'Sign In'
-              )}
+              Login Disabled
             </button>
 
             <div className="text-center">
